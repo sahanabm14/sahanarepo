@@ -1,14 +1,23 @@
-# Use an official NGINX image as the base image
-FROM nginx
+# Using Node.js 16 as the base image
+FROM node:16
 
-# Opening port for nginx
-EXPOSE 80
+# Setting up the working directory
+WORKDIR /app
 
-# Copy the HTML, CSS, and JavaScript files to the NGINX default directory
-COPY . /usr/share/nginx/html/
+# Copying the package.json and package-lock.json files to the working directory
+COPY package*.json ./
 
-# Copy the asset folder to the NGINX default directory
-COPY ./assets/ /usr/share/nginx/html/asset/
+# Installation of npm dependency
+RUN npm install
 
-# Set the default command to start NGINX
-CMD ["nginx", "-g", "daemon off;"]
+# Copy the application code
+COPY . .
+
+# Buildinf of the React app
+RUN npm run build
+
+# Expose port 3000 to access app
+EXPOSE 3000
+
+# Start your Node.js server
+CMD ["npm", "start"]
